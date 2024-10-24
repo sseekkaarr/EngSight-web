@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reading Lab - EngSight</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav>
+        <img src="img/logo.png" alt="EngSight Logo" class="logo">
+        <ul>
+            <li><a href="index.html">Home</a></li>
+        </ul>
+    </nav>
+    <div class="content">
+        <h2>Reading Lab</h2>
+        <p>Analyze the text by identifying claims, opposing arguments, and other key elements.</p>
+        
+]        <div class="article-section">
+            <button id="view-article-btn" onclick="toggleArticle()">View Full Article</button>
+            <div class="full-article" id="full-article" style="display: none;">
+                <p>Big Tech is monitoring our moods and employers are paying attention</p>
+                <p>By Andrew Orlowski</p>
+                <p>Have you ever imagined dying suddenly and failing to inform Facebook? It's probably the thing about death we fear most - that Mark Zuckerberg doesn't find out right away. Fear not, because Apple has this awful eventuality covered.</p>
+                <p>Apple has now interpreted sensor information to report your emotional state and published technical details of how to access it. In their wisdom, Apple's boffins have decreed that there are 10 detectable emotional states, and one of these is "death". How do you emotionally convey you're dead? The absence of a pulse would make this one of the simpler interpretive challenges, you might think.</p>
+                <p>Yet, this gruesome discovery is part of a worrying trend by big technology companies: gleaning your emotional condition for others to peruse. Unscrupulous employers and lazy public health officials will barely be able to contain their excitement, but for employees, and the rest of us, this may be very worrying indeed.</p>
+                <p>Last year Amazon introduced a fitness watch, Halo, with an unusual feature. Halo does all the usual things every fitness tracker does, like count steps and take your pulse. Only it introduced something new, too: a mood monitor. Listening to your voice, the Halo judges if you're being too angry or assertive - and gives you warnings to mind your tone. This is an electronic mood cop that lives on your body, telling you off. It doesn't take much imagination to see how employers will use this data when they want to shed staff for reasons other than performance - as some are keen to do already. Injudicious employees now don't have to worry about upsetting the staff - they might upset the sensor censors, too.</p>
+                <p>Apple confirmed last week that the sentiment data is at first only available to health researchers, where it might be useful to detect early signs of autism or dementia. The API isn't for everyone just yet - but powerful interests are at work. Biomedicine is betting big on this pool of data expanding, and insurance companies are keen too - so it's naïve to expect this to remain confined in the laboratory for very long.</p>
+                <p>The state also wants to supplement direct healthcare - with all those time-consuming one-to-one personal appointments - with pre-emptive interventions, too. It's in the workplace though, where employers are already encouraged to use biometric data, that we can expect to see an impact first.</p>
+                <p>What we're witnessing is the worrying union of three big trends. One is the decades-long expansion of corporate bureaucracy. Personnel departments morphed into "Human Resources" and mushroomed with the regulatory explosion of Health and Safety. Now they're morphing again, pushing into the more unclear "wellness" business. Wellness is an open-ended justification for making a judgmental intrusion into feelings and guessing our mental condition. This is quite a leap from ensuring that your desk is the correct height, and you know where the Fire Exit is. It means companies take on the role of psychologist, and technology industry is selling wearables that purport to help them.</p>
+                <p>The second factor is the rise of woke capitalism. Companies find it cheaper to virtue signal to high status opinion than they do to, say, raise wages, and this is allowing HR departments off the leash. They can now demand reflection and self-analysis, like the students in the Cultural Revolution screaming at the bourgeoisie. The third factor, and a potent accelerant, has been COVID, and the global shift to working from home, or WFH.</p>
+                <p>The BlackBerry made big inroads into our personal lives, but WFH has accelerated this. The boss wants to know you're doing at all times. Thus, what you thought was your own gear becomes work equipment, including the things you must wear. Casual real-world contact gives managers both vital non-verbal cues, and the flexibility to use common sense judgment. In their absence, data fills the void, so judgments become more centralized.</p>
+                <p>Why we choose to work longer.</p>
+                <p>There are one or two problems with this crude digital phrenology, however. Don't expect it to distinguish between sentiments like "French waiter hearing mispronounced entreé", and "Roy Keane Death Stare" - two I'd like to transmit, if they were only available. Apple's sentiment API lists 10 states - alongside Death, the device will report back that you are Angry, Anxious, Confused, Depressed, Sad or "have health concerns" - all negatives. On the positive side? Curiously, there is just one: Positive. That's it. It's almost as if the boffins have laid out a course that's impossible for anyone to navigate successfully, so numerous are the pitfalls we might fall into. But that's the dark secret of the wellness industry for you - it really wants as few "well" people as possible.</p>
+                <p>Even if Apple doesn't make the Sentiment API universally available, I fear this collision of technology, quack science, and wokeness isn't going to end well.</p>
+            </div>
+        </div>
+
+        <div class="submission-tool">
+            <h3>Submit Your Annotated File</h3>
+            <input type="file" accept=".pdf">
+        </div>
+
+        <div class="submission-tool">
+            <h3>Submit Arguments</h3>
+            <div class="argument-item">
+                <label for="claims">Claims:</label>
+                <textarea id="claims" rows="3"></textarea>
+            </div>
+            <div class="argument-item">
+                <label for="opposing">Opposing Argument:</label>
+                <textarea id="opposing" rows="3"></textarea>
+            </div>
+            <div class="argument-item">
+                <label for="backing">Backing:</label>
+                <textarea id="backing" rows="3"></textarea>
+            </div>
+            <div class="argument-item">
+                <label for="reason">Reason:</label>
+                <textarea id="reason" rows="3"></textarea>
+            </div>
+            <div class="argument-item">
+                <label for="shared-belief">Shared Belief:</label>
+                <textarea id="shared-belief" rows="3"></textarea>
+            </div>
+            <div class="argument-item">
+                <label for="refutation">Refutation:</label>
+                <textarea id="refutation" rows="3"></textarea>
+            </div>
+        </div>
+
+    <div class="submission-tool">
+        <h3>Vocabulary Quiz</h3>
+        <p>Drag the correct answer to the corresponding question.</p>
+        <div class="quiz-container">
+            <div class="quiz-item">
+                <p>1. Quack</p>
+                <div class="dropzone" id="dropzone1" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    Drop answer here
+                </div>
+            </div>
+            <div class="quiz-item">
+                <p>2. Virtue signal</p>
+                <div class="dropzone" id="dropzone2" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    Drop answer here
+                </div>
+            </div>
+            <div class="quiz-item">
+                <p>3. Gleaning</p>
+                <div class="dropzone" id="dropzone3" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    Drop answer here
+                </div>
+            </div>
+            <div class="quiz-item">
+                <p>4. Pre-emptive</p>
+                <div class="dropzone" id="dropzone4" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    Drop answer here
+                </div>
+            </div>
+            <div class="quiz-item">
+                <p>5. Decreed</p>
+                <div class="dropzone" id="dropzone5" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    Drop answer here
+                </div>
+            </div>
+        </div>
+
+        <div class="answers">
+            <p>Drag these answers to the correct questions:</p>
+            <div class="answer" draggable="true" ondragstart="drag(event)" id="answer1">Fake or unqualified professional</div>
+            <div class="answer" draggable="true" ondragstart="drag(event)" id="answer2">Expressing moral superiority</div>
+            <div class="answer" draggable="true" ondragstart="drag(event)" id="answer3">Gathering information bit by bit</div>
+            <div class="answer" draggable="true" ondragstart="drag(event)" id="answer4">Acting before an anticipated event</div>
+            <div class="answer" draggable="true" ondragstart="drag(event)" id="answer5">Officially ordered or decided</div>
+        </div>
+    </div>
+    
+    <script>
+        function allowDrop(event) {
+            event.preventDefault();
+        }
+
+        function drag(event) {
+            event.dataTransfer.setData("text", event.target.id);
+        }
+
+        function drop(event) {
+            event.preventDefault();
+            var data = event.dataTransfer.getData("text");
+            event.target.innerHTML = document.getElementById(data).innerHTML;
+            event.target.setAttribute("data-answer", data);
+        }
+    </script>
+
+        <button onclick="goToPost()">Next</button>
+    </div>
+    <script>
+        function toggleArticle() {
+        var article = document.getElementById("full-article");
+        var btn = document.getElementById("view-article-btn");
+        if (article.style.display === "none") {
+            article.style.display = "block";
+            btn.innerText = "Hide Full Article";
+        } else {
+            article.style.display = "none";
+            btn.innerText = "View Full Article";
+        }
+    }
+
+        function goToPost() {
+            window.location.href = 'post-reading.html';
+        }
+    </script>
+</body>
+</html>

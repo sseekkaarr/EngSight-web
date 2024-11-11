@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post-Reading Lab - EngSight</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+    <nav>
+        <img src="img/logo.png" alt="EngSight Logo" class="logo">
+        <ul>
+            <li><a href="index.html">Home</a></li>
+        </ul>
+    </nav>
+    <div class="content" style="text-align: center;">
+        <h2>Post-Reading Lab</h2>
+        <p>Write a summary-analysis/response essay of approx. 400 words</p>
+    </div>
+    <div class="submission-tool">
+        <textarea rows="10" placeholder="Write your essay here..."></textarea>
+        <button class="back" onclick="goToPrevious()">Back</button>
+        <button class="submit" onclick="submitEssay()">Submit</button>
+    </div>    
+    <script>
+        function goToPrevious() {
+            window.location.href = 'reading.html';
+        }
+
+        function submitEssay() {
+            // Menggunakan SweetAlert2 untuk mengganti alert bawaan
+            Swal.fire({
+                title: 'Exercise done!',
+                icon: 'success',
+                confirmButtonText: 'See result'
+            }).then(() => {
+                // Arahkan ke profile.html setelah tombol diklik
+                window.location.href = 'profile.html#test-results';
+            });
+        }
+    </script>
+</body>
+</html>

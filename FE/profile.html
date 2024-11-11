@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - EngSight</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav>
+        <img src="img/logo.png" alt="EngSight Logo" class="logo">
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li class="profile-menu">
+                <a href="#" class="profile-link">Profile</a>
+                <div class="dropdown hidden">
+                    <button id="logout-button">Log Out</button>
+                </div>
+            </li>
+        </ul>
+    </nav>
+
+    <main>
+        <h1 class="center">Your Profile</h1>
+
+        <!-- Box: Profile Info -->
+        <section class="profile-box profile-info">
+            <h2>Profile Info</h2>
+            <div class="profile-info-content">
+                <img id="profile-picture" src="img/default-avatar.png" alt="Profile Picture">
+                <p><strong>Name:</strong> Sekar Anindita</p>
+                <p><strong>Email:</strong> sekaranindita@example.com</p>
+            </div>
+        </section>
+        
+
+        <!-- Box: Learning Videos Progress -->
+        <section class="profile-box">
+            <h2>Learning Videos Progress</h2>
+            <div class="progress-category">
+                <h3>Introduction</h3>
+                <div class="progress-bar-container">
+                    <div class="progress-bar green" style="width: 90%;"></div>
+                </div>
+                <p>90% Completed</p>
+            </div>
+            <div class="progress-category">
+                <h3>Paragraph</h3>
+                <div class="progress-bar-container">
+                    <div class="progress-bar orange" style="width: 75%;"></div>
+                </div>
+                <p>75% Completed</p>
+            </div>
+            <div class="progress-category">
+                <h3>Essay</h3>
+                <div class="progress-bar-container">
+                    <div class="progress-bar green" style="width: 95%;"></div>
+                </div>
+                <p>95% Completed</p>
+            </div>
+            <div class="progress-category">
+                <h3>Citation</h3>
+                <div class="progress-bar-container">
+                    <div class="progress-bar red" style="width: 40%;"></div>
+                </div>
+                <p>40% Completed</p>
+            </div>
+        </section>
+        
+        
+
+        <!-- Box: Test Results -->
+        <!-- Box: Test Results -->
+        <section id="test-results" class="profile-box">
+            <h2>Your Test Results</h2>
+            <div class="test-cards">
+                <!-- Pre-Reading Lab -->
+                <div class="test-card">
+                    <div class="progress-ring high-score" data-score="100">
+                        <span class="score-text">100%</span>
+                    </div>
+                    <h3>Pre-Reading Lab</h3>
+                    <p><strong>Date:</strong> 2024-11-06</p>
+                </div>
+                <!-- Reading Lab -->
+                <div class="test-card">
+                    <div class="progress-ring low-score" data-score="60">
+                        <span class="score-text">60%</span>
+                    </div>
+                    <h3>Reading Lab</h3>
+                    <p><strong>Date:</strong> 2024-11-07</p>
+                </div>
+                <!-- Post-Reading Lab -->
+                <div class="test-card">
+                    <div class="progress-ring medium-score" data-score="80">
+                        <span class="score-text">80%</span>
+                    </div>
+                    <h3>Post-Reading Lab</h3>
+                    <p><strong>Date:</strong> 2024-11-08</p>
+                </div>
+            </div>
+        </section>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                if (window.location.hash === '#test-results') {
+                    const testResultsSection = document.querySelector('#test-results');
+                    if (testResultsSection) {
+                        // Gulir dengan offset agar judul terlihat
+                        const yOffset = -100; // Sesuaikan offset untuk ruang atas
+                        const y = testResultsSection.getBoundingClientRect().top + window.pageYOffset + yOffset;
+                        window.scrollTo({ top: y, behavior: 'smooth' });
+                    }
+                }
+            });
+        </script>
+        
+        
+        
+        
+
+       <!-- Box: Activity Log -->
+        <section class="profile-box">
+            <h2>Your Activity Log</h2>
+            <div id="calendar-controls">
+                <button id="prev-month">&lt;</button>
+                <span id="month-year"></span>
+                <button id="next-month">&gt;</button>
+            </div>
+            <div id="calendar-container">
+                <div id="calendar"></div>
+            </div>
+            <div id="activity-log-details" class="hidden">
+                <h3>Activity Details</h3>
+                <ul id="activity-log-list">
+                    <li>Select a date to view activity</li>
+                </ul>
+            </div>
+        </section>
+        <button class="logout" onclick="logout()">Log Out</button>
+        
+
+    </main>
+
+    
+    <script>
+        function confirmLogout() {
+            if (confirm("Are you sure you want to log out?")) {
+                window.location.href = 'login.html';
+            } else {
+                // Stay on the profile page
+            }
+        }
+    </script>
+
+    <script src="js/profile.js"></script>
+
+    
+</body>
+</html>

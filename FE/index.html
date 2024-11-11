@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - EngSight</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav>
+        <img src="img/logo.png" alt="EngSight Logo" class="logo">
+        <ul>
+            <li><a href="register.html">Sign Up</a></li> <!-- Tambahkan hidden jika ingin default sembunyi -->
+            <li><a href="login.html">Sign In</a></li> <!-- Tambahkan hidden jika ingin default sembunyi -->
+            <li class="profile-menu hidden">
+                <a href="profile.html" class="profile-link">Profile</a>
+            </li>
+        </ul>
+    </nav>
+
+    <div class="home-content">
+        <h1>Welcome to EngSight!</h1>
+
+        <div class="center-image">
+            <img src="img/hom.png" alt="Main Image" class="small-img">
+        </div>
+
+        <p class="left-text">Develop your critical thinking and reading skills before, during, and after reading.</p>
+
+        <h2 class="learning-videos-title">Learning Videos</h2>
+        <div class="learning-videos">
+            <div class="video-item">
+                <a href="https://youtu.be/S_DfFaVkaqQ?si=sVds4JDy1cHnxOpL" target="_blank">
+                    <img src="https://img.youtube.com/vi/S_DfFaVkaqQ/0.jpg" alt="Video 1">
+                </a>
+            </div>
+            <div class="video-item">
+                <a href="https://youtu.be/MNZO-dpyi2w?si=A8DGUYsQfSD5yvec" target="_blank">
+                    <img src="https://img.youtube.com/vi/MNZO-dpyi2w/0.jpg" alt="Video 2">
+                </a>
+            </div>
+            <div class="video-item">
+                <a href="https://youtu.be/WP2fWsLNdQI?si=oj3CVP224Wdy1DVW" target="_blank">
+                    <img src="https://img.youtube.com/vi/WP2fWsLNdQI/0.jpg" alt="Video 3">
+                </a>
+            </div>
+        </div>
+
+        <a href="all-videos.html" class="view-more">View More</a>
+
+        <div class="exercise-title">
+            Exercise
+        </div>
+
+        <div class="links">
+            <div class="link-item" onclick="showDescription('pre-reading')">
+                <img src="img/pre.png" alt="Pre-Reading Image">
+                <a href="javascript:void(0)" class="link-button">Pre-Reading Lab</a>
+            </div>
+            <div class="link-item" onclick="showDescription('reading')">
+                <img src="img/read.png" alt="Reading Lab Image">
+                <a href="javascript:void(0)" class="link-button">Reading Lab</a>
+            </div>
+            <div class="link-item" onclick="showDescription('post-reading')">
+                <img src="img/post.png" alt="Post-Reading Image">
+                <a href="javascript:void(0)" class="link-button">Post-Reading Lab</a>
+            </div>
+        </div>
+
+        <div class="description-container" id="description-container">
+        </div>
+
+        <button class="start-now" id="start-now">Start Now</button>
+    </div>
+
+    <script src="js/script.js"></script>
+</body>
+</html>

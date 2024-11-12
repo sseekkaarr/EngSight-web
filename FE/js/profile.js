@@ -1,56 +1,92 @@
-console.log('Profile.js loaded');
+console.log("Profile.js loaded");
 
-const loadTestResults = (results) => {
-    const testResultsContainer = document.getElementById('test-results');
-    testResultsContainer.innerHTML = ''; // Hapus data lama sebelum mengisi ulang
+const loadProfile = async () => {
+  try {
+    const token = localStorage.getItem("token");
 
-    results.forEach(result => {
-        const card = document.createElement('div');
-        card.classList.add('test-card');
+    if (!token) {
+      throw new Error("Token not found. Please log in.");
+    }
 
-        const iconMap = {
-            'Pre-Reading Lab': 'img/pre.png',
-            'Reading Lab': 'img/read.png',
-            'Post-Reading Lab': 'img/post.png'
-        };
-
-        card.innerHTML = `
-            <img src="${iconMap[result.testName]}" alt="${result.testName}" class="test-icon">
-            <div class="test-content">
-                <h3>${result.testName}</h3>
-                <p><strong>Score:</strong> ${result.score}%</p>
-                <p><strong>Date:</strong> ${result.date}</p>
-            </div>
-        `;
-        testResultsContainer.appendChild(card);
+    const response = await fetch("http://localhost:5001/api/auth/profile", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch profile data`);
+    }
+
+    const data = await response.json();
+
+    // Update profil
+    document.getElementById("profile-name").textContent = data.name;
+    document.getElementById("profile-email").textContent = data.email;
+    document.getElementById("profile-picture").src = "img/default-avatar.png";
+
+    // Load test results with dummy data
+    loadTestResults(dummyTestResults);
+
+    console.log("Profile loaded successfully");
+  } catch (error) {
+    console.error("Error loading profile:", error.message);
+    alert("Error loading profile data. Please try again.");
+  }
 };
 
-// Dummy data
+const loadTestResults = (results) => {
+  const testResultsContainer = document.querySelector(".test-cards");
+  testResultsContainer.innerHTML = ""; // Clear previous data
+
+  results.forEach((result) => {
+    const card = document.createElement("div");
+    card.classList.add("test-card");
+
+    // Tentukan warna berdasarkan skor
+    let scoreColor = "";
+    if (result.score >= 90) {
+      scoreColor = "#4caf50"; // Hijau
+    } else if (result.score >= 70) {
+      scoreColor = "#ff9800"; // Oranye
+    } else {
+      scoreColor = "#f44336"; // Merah
+    }
+
+    // Buat elemen progress ring
+    const progressRing = document.createElement("div");
+    progressRing.classList.add("progress-ring");
+    progressRing.style.backgroundColor = scoreColor; // Terapkan warna langsung
+
+    const scoreText = document.createElement("span");
+    scoreText.classList.add("score-text");
+    scoreText.textContent = `${result.score}%`;
+
+    progressRing.appendChild(scoreText);
+
+    card.innerHTML = `
+      <h3>${result.testName}</h3>
+      <p><strong>Date:</strong> ${result.date}</p>
+    `;
+
+    card.prepend(progressRing);
+    testResultsContainer.appendChild(card);
+  });
+
+  console.log("Test results loaded with colors.");
+};
+
+// Dummy data for test results
 const dummyTestResults = [
-    { testName: 'Pre-Reading Lab', score: 100, date: '2024-11-06' },
-    { testName: 'Reading Lab', score: 85, date: '2024-11-07' },
-    { testName: 'Post-Reading Lab', score: 90, date: '2024-11-08' },
+  { testName: "Pre-Reading Lab", score: 100, date: "2024-11-06" },
+  { testName: "Reading Lab", score: 60, date: "2024-11-07" },
+  { testName: "Post-Reading Lab", score: 80, date: "2024-11-08" },
 ];
 
-// Load test results on page load
-document.addEventListener('DOMContentLoaded', () => {
-    const progressRings = document.querySelectorAll('.progress-ring');
+// Run loadProfile on DOMContentLoaded
+document.addEventListener("DOMContentLoaded", loadProfile);
 
-    progressRings.forEach(ring => {
-        const score = parseInt(ring.getAttribute('data-score'), 10);
-        ring.style.setProperty('--score', score);
-
-        // Tentukan kelas warna berdasarkan skor
-        if (score >= 90) {
-            ring.classList.add('high-score');
-        } else if (score >= 70) {
-            ring.classList.add('medium-score');
-        } else {
-            ring.classList.add('low-score');
-        }
-    });
-});
 
 
 
@@ -72,48 +108,6 @@ const dummyProfileData = {
         { description: 'Scored 85 on Reading Lab', date: '2024-11-07' },
     ],
 };
-
-// Load Profile Data
-const loadProfile = async () => {
-    const data = dummyProfileData; // Replace with API call when back-end is ready
-
-    // Update profile info
-    document.getElementById('profile-name').textContent = data.name;
-    document.getElementById('profile-email').textContent = data.email;
-    document.getElementById('profile-picture').src = data.profilePicture;
-
-    // Update video progress
-    const videoProgress = document.getElementById('video-progress');
-    videoProgress.innerHTML = '';
-    data.videos.forEach(video => {
-        const li = document.createElement('li');
-        li.textContent = `${video.title} - Watched on ${video.watchedAt}`;
-        videoProgress.appendChild(li);
-    });
-
-    // Update test results
-    const testResults = document.getElementById('test-results');
-    testResults.innerHTML = '';
-    data.tests.forEach(test => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td>${test.testName}</td>
-            <td>${test.score}</td>
-            <td>${test.date}</td>
-        `;
-        testResults.appendChild(row);
-    });
-
-    // Update activity log
-    const activityLog = document.getElementById('activity-log');
-    activityLog.innerHTML = '';
-    data.activities.forEach(activity => {
-        const li = document.createElement('li');
-        li.textContent = `${activity.description} - ${activity.date}`;
-        activityLog.appendChild(li);
-    });
-};
-
 // Data aktivitas (contoh data)
 const activityData = {
     '2024-11-01': ['Completed Video 1', 'Scored 85 on Reading Lab'],
@@ -203,8 +197,7 @@ document.getElementById('next-month').addEventListener('click', () => changeMont
 // Panggil fungsi generateCalendar saat halaman dimuat
 document.addEventListener('DOMContentLoaded', generateCalendar);
 
-
-
+// Panggil fungsi loadProfile saat halaman dimuat
 document.addEventListener('DOMContentLoaded', loadProfile);
 
 // Selecting the logout button
@@ -219,4 +212,3 @@ if (logoutButton) {
         // If canceled, nothing happens, stays on the profile page
     });
 }
-

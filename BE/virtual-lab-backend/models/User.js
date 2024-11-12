@@ -12,12 +12,21 @@ const User = sequelize.define('User', {
         type: DataTypes.STRING,
         allowNull: false,
     },
+    name: {
+        type: DataTypes.STRING,
+        allowNull: false, // Name is required
+    },
 });
 
-// Hash password sebelum menyimpan
+// Hook untuk hash password sebelum menyimpan
 User.beforeCreate(async (user) => {
     const salt = await bcrypt.genSalt(10);
     user.password = await bcrypt.hash(user.password, salt);
+
+    // Set default name jika tidak diisi
+    if (!user.name || user.name.trim() === '') {
+        user.name = 'User';
+    }
 });
 
 module.exports = User;

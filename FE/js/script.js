@@ -175,3 +175,42 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+// Fetch user profile data and update the profile page
+document.addEventListener('DOMContentLoaded', () => {
+    const profileNameElement = document.getElementById('profile-name');
+    const profileEmailElement = document.getElementById('profile-email');
+
+    if (profileNameElement && profileEmailElement) {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            console.error('No token found. Redirecting to login.');
+            window.location.href = 'login.html'; // Redirect to login if not authenticated
+            return;
+        }
+
+        fetch('http://localhost:5001/api/profile', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token,
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.name && data.email) {
+                profileNameElement.textContent = data.name;
+                profileEmailElement.textContent = data.email;
+                console.log('Profile data loaded:', data);
+            } else {
+                console.error('Incomplete profile data received:', data);
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching profile data:', error);
+            profileNameElement.textContent = 'Error loading name';
+            profileEmailElement.textContent = 'Error loading email';
+        });
+    }
+});
+a

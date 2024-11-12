@@ -8,6 +8,8 @@ const videoProgressRoutes = require('./routes/videoProgress'); // Import video p
 
 const app = express();
 
+app.use(express.json());
+
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());

@@ -27,6 +27,7 @@ if (registerForm) {
     registerForm.addEventListener('submit', async function (e) {
         e.preventDefault();
 
+        const name = document.getElementById('register-name').value;
         const email = document.getElementById('register-email').value;
         const password = document.getElementById('register-password').value;
 
@@ -36,7 +37,7 @@ if (registerForm) {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ email, password }),
+                body: JSON.stringify({ name, email, password }),
             });
 
             const data = await response.json();
@@ -213,4 +214,33 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
-a
+
+const trackVideoProgress = async (videoId, sectionName) => {
+    const userId = localStorage.getItem("user_id"); // Pastikan user_id tersimpan di localStorage
+
+    console.log("trackVideoProgress called with:", { userId, videoId, sectionName });
+
+    try {
+        const response = await fetch(`${apiUrl}/videos/progress`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+            body: JSON.stringify({
+                user_id: userId, // Gunakan nama variabel sesuai database
+                video_id: videoId,
+                section_name: sectionName,
+            }),
+        });
+
+        if (response.ok) {
+            console.log("Progress saved successfully.");
+        } else {
+            console.error("Failed to save progress. Response status:", response.status);
+        }
+    } catch (error) {
+        console.error("Error saving progress:", error);
+    }
+};
+

@@ -1,5 +1,9 @@
 console.log("Profile.js loaded");
 
+
+const apiUrl = "http://localhost:5001/api";
+
+// Fungsi untuk memuat data profil dari backend
 const loadProfile = async () => {
   try {
     const token = localStorage.getItem("token");
@@ -8,7 +12,7 @@ const loadProfile = async () => {
       throw new Error("Token not found. Please log in.");
     }
 
-    const response = await fetch("http://localhost:5001/api/auth/profile", {
+    const response = await fetch(`${apiUrl}/auth/profile`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -26,9 +30,6 @@ const loadProfile = async () => {
     document.getElementById("profile-email").textContent = data.email;
     document.getElementById("profile-picture").src = "img/default-avatar.png";
 
-    // Load test results with dummy data
-    loadTestResults(dummyTestResults);
-
     console.log("Profile loaded successfully");
   } catch (error) {
     console.error("Error loading profile:", error.message);
@@ -36,6 +37,129 @@ const loadProfile = async () => {
   }
 };
 
+// Fungsi untuk memuat progress video
+const loadVideoProgress = async () => {
+  const userId = localStorage.getItem("user_id");
+
+  try {
+      const response = await fetch(`${apiUrl}/videos/progress?user_id=${userId}`, {
+          method: "GET",
+          headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+              "Content-Type": "application/json",
+          },
+      });
+
+      let progressData;
+      if (response.ok) {
+          progressData = await response.json();
+      } else {
+          console.warn("No progress data found. Using default values.");
+          progressData = [];
+      }
+
+      // Default progress untuk 4 section
+      const defaultSections = [
+          { section_name: "Introduction", progress: 0 },
+          { section_name: "Paragraph", progress: 0 },
+          { section_name: "Essay", progress: 0 },
+          { section_name: "Citation", progress: 0 },
+      ];
+
+      // Gabungkan data dari backend dengan default data
+      const finalData = defaultSections.map((defaultSection) => {
+          const backendSection = progressData.find(
+              (item) => item.section_name === defaultSection.section_name
+          );
+          return backendSection || defaultSection;
+      });
+
+      renderProgressBars(finalData);
+  } catch (error) {
+      console.error("Error loading video progress:", error.message);
+
+      // Jika ada error, gunakan default data
+      const defaultSections = [
+          { section_name: "Introduction", progress: 0 },
+          { section_name: "Paragraph", progress: 0 },
+          { section_name: "Essay", progress: 0 },
+          { section_name: "Citation", progress: 0 },
+      ];
+      renderProgressBars(defaultSections);
+  }
+};
+
+// Fungsi untuk merender progress bar secara dinamis
+const renderProgressBars = async () => {
+  const userId = localStorage.getItem("user_id"); // Ambil user ID dari localStorage
+  const progressContainer = document.querySelector(".progress-container");
+
+  
+
+  try {
+      const response = await fetch(`http://localhost:5001/api/videos/progress?user_id=${userId}`, {
+          method: "GET",
+          headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+      });
+
+      if (!response.ok) {
+          throw new Error(`Failed to fetch progress: ${response.status}`);
+      }
+
+      const progressData = await response.json(); // Ambil data dari backend
+      const sections = ["Introduction", "Paragraph", "Essay", "Citation"]; // Semua section
+
+      progressContainer.innerHTML = ""; // Kosongkan kontainer sebelum render ulang
+
+      sections.forEach((sectionName) => {
+          // Filter data untuk setiap section
+          const sectionVideos = progressData.filter(
+              (progress) => progress.section_name === sectionName
+          );
+
+          const totalVideos = sectionVideos.length;
+          const watchedVideos = sectionVideos.filter((video) => video.watched).length;
+          const completedPercentage = totalVideos > 0 ? (watchedVideos / totalVideos) * 100 : 0;
+
+          const progressCategory = document.createElement("div");
+          progressCategory.classList.add("progress-category");
+
+          progressCategory.innerHTML = `
+              <h3>${sectionName}</h3>
+              <div class="progress-bar-container">
+                  <div class="progress-bar ${
+                      completedPercentage >= 90
+                          ? "green"
+                          : completedPercentage >= 70
+                          ? "orange"
+                          : "red"
+                  }" style="width: ${completedPercentage}%;"></div>
+              </div>
+              <p>${Math.round(completedPercentage)}% Completed</p>
+          `;
+
+          progressContainer.appendChild(progressCategory);
+      });
+
+      console.log("Progress bars updated successfully!");
+  } catch (error) {
+      console.error("Error rendering progress bars:", error);
+  }
+};
+
+// Jalankan fungsi ini saat halaman dimuat
+document.addEventListener("DOMContentLoaded", renderProgressBars);
+
+
+
+
+// Panggil fungsi loadVideoProgress saat halaman dimuat
+document.addEventListener("DOMContentLoaded", loadVideoProgress);
+
+
+// Fungsi untuk memuat hasil tes (dummy data tetap digunakan)
 const loadTestResults = (results) => {
   const testResultsContainer = document.querySelector(".test-cards");
   testResultsContainer.innerHTML = ""; // Clear previous data
@@ -77,37 +201,12 @@ const loadTestResults = (results) => {
   console.log("Test results loaded with colors.");
 };
 
-// Dummy data for test results
+// Dummy data untuk hasil tes
 const dummyTestResults = [
   { testName: "Pre-Reading Lab", score: 100, date: "2024-11-06" },
   { testName: "Reading Lab", score: 60, date: "2024-11-07" },
   { testName: "Post-Reading Lab", score: 80, date: "2024-11-08" },
 ];
-
-// Run loadProfile on DOMContentLoaded
-document.addEventListener("DOMContentLoaded", loadProfile);
-
-
-
-
-// Dummy data for testing
-const dummyProfileData = {
-    name: 'Sekar Anindita',
-    email: 'sekaranindita@example.com',
-    profilePicture: 'img/default-avatar.png',
-    videos: [
-        { title: 'Video 1', watchedAt: '2024-11-01' },
-        { title: 'Video 2', watchedAt: '2024-11-03' },
-    ],
-    tests: [
-        { testName: 'Reading Lab', score: 85, date: '2024-11-07' },
-        { testName: 'Post-Reading Lab', score: 90, date: '2024-11-08' },
-    ],
-    activities: [
-        { description: 'Completed Video 1', date: '2024-11-01' },
-        { description: 'Scored 85 on Reading Lab', date: '2024-11-07' },
-    ],
-};
 // Data aktivitas (contoh data)
 const activityData = {
     '2024-11-01': ['Completed Video 1', 'Scored 85 on Reading Lab'],

@@ -1,4 +1,6 @@
-console.log('Index.js loaded');
+console.log("index.js loaded");
+const apiUrl = "http://localhost:5001/api";
+
 
 function showDescription(lab) {
     const descriptionContainer = document.getElementById("description-container");
@@ -32,25 +34,49 @@ function startNow() {
     }
 }
 
-function trackVideoProgress(videoId, sectionName) {
-    fetch('http://localhost:5001/api/videos/progress', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            userId: 1, // Ganti dengan userId yang sesuai
-            videoId: videoId,
-            sectionName: sectionName,
-        }),
-    })
-    .then(response => response.json())
-    .then(data => {
-        console.log(data.message); // Feedback dari server
-    })
-    .catch(error => {
-        console.error('Error:', error);
+const trackVideoProgress = async (videoId, sectionName) => {
+    const userId = localStorage.getItem("user_id"); // Ambil user_id dari localStorage
+    const token = localStorage.getItem("token"); // Ambil token dari localStorage
+
+    // Debugging log untuk memastikan data yang dikirim
+    console.log("Sending video progress:", { userId, videoId, sectionName });
+
+    try {
+        const response = await fetch("http://localhost:5001/api/videos/progress", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`, // Kirim token
+            },
+            body: JSON.stringify({
+                user_id: userId,
+                video_id: videoId,
+                section_name: sectionName,
+                watched: true, // Tandai sebagai sudah ditonton
+            }),
+        });
+
+        if (response.ok) {
+            console.log("Progress saved successfully.");
+        } else {
+            console.error("Failed to save progress. Response status:", response.status);
+        }
+    } catch (error) {
+        console.error("Error saving progress:", error);
+    }
+};
+
+
+// Tambahkan event listener untuk semua video
+document.querySelectorAll(".video-item a").forEach((link) => {
+    link.addEventListener("click", (event) => {
+        const videoId = link.dataset.videoId; // Pastikan atribut `data-video-id` ada
+        const sectionName = link.closest("section").querySelector("h2").textContent.trim();
+
+        trackVideoProgress(videoId, sectionName);
     });
-}
+});
+
+
 
 

@@ -95,11 +95,11 @@
 
         <div class="answers">
             <p>Drag these answers to the correct questions:</p>
-            <div class="answer" draggable="true" ondragstart="drag(event)" id="answer1">Fake or unqualified professional</div>
-            <div class="answer" draggable="true" ondragstart="drag(event)" id="answer2">Expressing moral superiority</div>
-            <div class="answer" draggable="true" ondragstart="drag(event)" id="answer3">Gathering information bit by bit</div>
-            <div class="answer" draggable="true" ondragstart="drag(event)" id="answer4">Acting before an anticipated event</div>
-            <div class="answer" draggable="true" ondragstart="drag(event)" id="answer5">Officially ordered or decided</div>
+            <div class="answer" draggable="true" ondragstart="drag(event)" id="Fake or unqualified professional">Fake or unqualified professional</div>
+            <div class="answer" draggable="true" ondragstart="drag(event)" id="Expressing moral superiority">Expressing moral superiority</div>
+            <div class="answer" draggable="true" ondragstart="drag(event)" id="Gathering information bit by bit">Gathering information bit by bit</div>
+            <div class="answer" draggable="true" ondragstart="drag(event)" id="Acting before an anticipated event">Acting before an anticipated event</div>
+            <div class="answer" draggable="true" ondragstart="drag(event)" id="Officially ordered or decided">Officially ordered or decided</div>
         </div>
     </div>
     <script>
@@ -128,8 +128,58 @@
         }
     </script>
         <button class="back" onclick="goToPrevious()">Back</button>
-        <button class="next" onclick="goToPost()">Next</button>
+        <button class="next" onclick="submitReadingAndRedirect()">Next</button>
     </div>
+
+    <script>
+        async function submitReadingAndRedirect() {
+            const textBoxAnswers = {
+                Claims: document.getElementById("claims").value.trim(),
+                Reasons: document.getElementById("reason").value.trim(),
+                Backings: document.getElementById("backing").value.trim(),
+                Refutations: document.getElementById("refutation").value.trim(),
+            };
+    
+            const dragDropAnswers = {
+                Quack: document.getElementById("dropzone1").getAttribute("data-answer") || "",
+                VirtueSignal: document.getElementById("dropzone2").getAttribute("data-answer") || "",
+                Gleaning: document.getElementById("dropzone3").getAttribute("data-answer") || "",
+                PreEmptive: document.getElementById("dropzone4").getAttribute("data-answer") || "",
+                Decreed: document.getElementById("dropzone5").getAttribute("data-answer") || "",
+            };
+    
+            const payload = {
+                user_id: 5, // Ganti dengan user ID yang sedang login
+                text_box: textBoxAnswers,
+                drag_drop: dragDropAnswers,
+            };
+    
+            try {
+                const response = await fetch("http://127.0.0.1:5001/api/test/evaluate-test", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(payload),
+                });
+    
+                const result = await response.json();
+    
+                if (response.ok) {
+                    console.log(`Test submitted successfully. Score: ${result.totalScore}/${result.maxScore}`);
+                    // Redirect ke halaman Post-Reading Lab
+                    window.location.href = "post-reading.html";
+                } else {
+                    console.error(result.error);
+                    alert("Failed to submit the test. Please try again.");
+                }
+            } catch (err) {
+                console.error(err);
+                alert("An error occurred while submitting the test.");
+            }
+        }
+    </script>
+    
     <script>
         function toggleArticle() {
         var article = document.getElementById("full-article");
@@ -147,5 +197,6 @@
             window.location.href = 'post-reading.html';
         }
     </script>
+    
 </body>
 </html>

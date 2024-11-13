@@ -23,3 +23,17 @@ export const apiRequest = async (endpoint, method = "GET", body = null) => {
         throw error;
     }
 };
+
+export const fetchTestResults = async (userId) => {
+    try {
+        const response = await fetch(`/api/test-results/${userId}`);
+        if (!response.ok) {
+            throw new Error("Failed to fetch test results");
+        }
+        return await response.json();
+    } catch (error) {
+        console.error("Error fetching test results:", error);
+        throw error;
+    }
+};
+

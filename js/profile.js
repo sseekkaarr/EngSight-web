@@ -158,55 +158,68 @@ document.addEventListener("DOMContentLoaded", renderProgressBars);
 // Panggil fungsi loadVideoProgress saat halaman dimuat
 document.addEventListener("DOMContentLoaded", loadVideoProgress);
 
-
-// Fungsi untuk memuat hasil tes (dummy data tetap digunakan)
-const loadTestResults = (results) => {
-  const testResultsContainer = document.querySelector(".test-cards");
-  testResultsContainer.innerHTML = ""; // Clear previous data
-
-  results.forEach((result) => {
-    const card = document.createElement("div");
-    card.classList.add("test-card");
-
-    // Tentukan warna berdasarkan skor
-    let scoreColor = "";
-    if (result.score >= 90) {
-      scoreColor = "#4caf50"; // Hijau
-    } else if (result.score >= 70) {
-      scoreColor = "#ff9800"; // Oranye
-    } else {
-      scoreColor = "#f44336"; // Merah
-    }
-
-    // Buat elemen progress ring
-    const progressRing = document.createElement("div");
-    progressRing.classList.add("progress-ring");
-    progressRing.style.backgroundColor = scoreColor; // Terapkan warna langsung
-
-    const scoreText = document.createElement("span");
-    scoreText.classList.add("score-text");
-    scoreText.textContent = `${result.score}%`;
-
-    progressRing.appendChild(scoreText);
-
-    card.innerHTML = `
-      <h3>${result.testName}</h3>
-      <p><strong>Date:</strong> ${result.date}</p>
-    `;
-
-    card.prepend(progressRing);
-    testResultsContainer.appendChild(card);
-  });
-
-  console.log("Test results loaded with colors.");
+// Fungsi untuk mengambil hasil tes dari backend
+const fetchTestResults = async (userId) => {
+  try {
+      const response = await fetch(`/api/test-results/${userId}`);
+      if (!response.ok) {
+          throw new Error("Failed to fetch test results.");
+      }
+      const results = await response.json();
+      loadTestResults(results); // Panggil fungsi render
+  } catch (error) {
+      console.error("Error fetching test results:", error);
+      document.querySelector(".test-cards").innerHTML = `<p>Error loading test results. Please try again later.</p>`;
+  }
 };
 
-// Dummy data untuk hasil tes
-const dummyTestResults = [
-  { testName: "Pre-Reading Lab", score: 100, date: "2024-11-06" },
-  { testName: "Reading Lab", score: 60, date: "2024-11-07" },
-  { testName: "Post-Reading Lab", score: 80, date: "2024-11-08" },
-];
+
+const loadTestResults = (results) => {
+  const testResultsContainer = document.querySelector(".test-cards");
+  testResultsContainer.innerHTML = ""; // Bersihkan kontainer sebelumnya
+
+  results.forEach((result) => {
+      const card = document.createElement("div");
+      card.classList.add("test-card");
+
+      // Tentukan warna lingkaran progres berdasarkan skor
+      let scoreColor = "";
+      if (result.score >= 90) {
+          scoreColor = "#4caf50"; // Hijau untuk skor tinggi
+      } else if (result.score >= 70) {
+          scoreColor = "#ff9800"; // Oranye untuk skor sedang
+      } else {
+          scoreColor = "#f44336"; // Merah untuk skor rendah
+      }
+
+      // Elemen lingkaran progres
+      const progressRing = document.createElement("div");
+      progressRing.classList.add("progress-ring");
+      progressRing.style.borderColor = scoreColor;
+
+      const scoreText = document.createElement("span");
+      scoreText.classList.add("score-text");
+      scoreText.textContent = `${result.score}%`;
+
+      progressRing.appendChild(scoreText);
+
+      // Tambahkan data hasil tes ke dalam card
+      card.innerHTML = `
+          <h3>${result.test_type.replace(/_/g, " ")}</h3>
+          <p><strong>Date:</strong> ${new Date(result.submission_date).toLocaleDateString()}</p>
+      `;
+      card.prepend(progressRing);
+      testResultsContainer.appendChild(card);
+  });
+};
+document.addEventListener("DOMContentLoaded", () => {
+  const userId = 5; // Ganti dengan ID user yang sesuai
+  fetchTestResults(userId);
+});
+
+
+
+
 // Data aktivitas (contoh data)
 const activityData = {
     '2024-11-01': ['Completed Video 1', 'Scored 85 on Reading Lab'],

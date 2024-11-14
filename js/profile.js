@@ -64,7 +64,7 @@ const fetchTestResults = async () => {
       }
 
       const result = await response.json();
-      console.log("Test Results:", result); // Tambahkan log ini untuk debugging
+      console.log("Test Results:", result); // Debugging
       renderTestResults(result);
   } catch (error) {
       console.error("Error fetching test results:", error);
@@ -73,43 +73,48 @@ const fetchTestResults = async () => {
 };
 
 
+
 const renderTestResults = (results) => {
   const testResultsContainer = document.querySelector(".test-cards");
   testResultsContainer.innerHTML = ""; // Kosongkan kontainer sebelumnya
 
   const renderCard = (testResult, testType) => {
-      if (!testResult) return; // Jika hasil null, abaikan
+      if (!testResult) return;
 
-      const card = document.createElement("div");
-      card.classList.add("test-card");
+      const score = testResult.score || 0; // Default score 0 jika tidak ada
+      const maxScore = testResult.max_score || 100; // Default max_score 100
+      const testDate = testResult.submission_date
+          ? new Date(testResult.submission_date).toLocaleDateString()
+          : "Not Attempted";
 
-      // Tentukan warna lingkaran progres berdasarkan skor
       let scoreColor = "";
-      if (testResult.score >= 90) {
+      if (score >= 90) {
           scoreColor = "#4caf50"; // Hijau untuk skor tinggi
-      } else if (testResult.score >= 50) {
+      } else if (score >= 50) {
           scoreColor = "#ff9800"; // Oranye untuk skor sedang
       } else {
           scoreColor = "#f44336"; // Merah untuk skor rendah
       }
 
-      // Render kartu hasil tes
+      const card = document.createElement("div");
+      card.classList.add("test-card");
       card.innerHTML = `
           <div class="progress-ring" style="border-color: ${scoreColor};">
-              <span class="score-text">${testResult.score}%</span>
+              <span class="score-text">${score}%</span>
           </div>
           <h3>${testType.replace("_", " ")}</h3>
-          <p><strong>Date:</strong> ${new Date(testResult.submission_date).toLocaleDateString()}</p>
+          <p><strong>Date:</strong> ${testDate}</p>
       `;
 
       testResultsContainer.appendChild(card);
   };
 
-  // Render hasil pre-reading lab, reading lab, dan post-reading lab
+  // Render hasil pre-reading, reading, dan post-reading
   renderCard(results.preReadingLab, "pre_reading_lab");
   renderCard(results.readingLab, "reading_lab");
-  renderCard(results.postReadingLab, "post_reading_lab"); // Tambahkan post-reading lab
+  renderCard(results.postReadingLab, "post_reading_lab");
 };
+
 
 
 // Panggil fungsi saat halaman dimuat

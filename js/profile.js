@@ -50,7 +50,7 @@ const loadProfile = async () => {
 
 // Fungsi untuk mengambil hasil tes dari backend
 const fetchTestResults = async () => {
-  const userId = localStorage.getItem("user_id"); // Ambil user ID dari localStorage
+  const userId = localStorage.getItem("user_id");
   if (!userId) {
       console.error("User ID not found in localStorage.");
       document.querySelector(".test-cards").innerHTML = `<p>No test results found.</p>`;
@@ -63,13 +63,15 @@ const fetchTestResults = async () => {
           throw new Error("Failed to fetch test results.");
       }
 
-      const result = await response.json(); // Mengambil hasil tes terakhir
+      const result = await response.json();
+      console.log("Test Results:", result); // Tambahkan log ini untuk debugging
       renderTestResults(result);
   } catch (error) {
       console.error("Error fetching test results:", error);
       document.querySelector(".test-cards").innerHTML = `<p>Error loading test results. Please try again later.</p>`;
   }
 };
+
 
 const renderTestResults = (results) => {
   const testResultsContainer = document.querySelector(".test-cards");
@@ -90,7 +92,6 @@ const renderTestResults = (results) => {
       } else {
           scoreColor = "#f44336"; // Merah untuk skor rendah
       }
-      
 
       // Render kartu hasil tes
       card.innerHTML = `
@@ -104,10 +105,12 @@ const renderTestResults = (results) => {
       testResultsContainer.appendChild(card);
   };
 
-  // Render hasil pre-reading lab dan reading lab
+  // Render hasil pre-reading lab, reading lab, dan post-reading lab
   renderCard(results.preReadingLab, "pre_reading_lab");
   renderCard(results.readingLab, "reading_lab");
+  renderCard(results.postReadingLab, "post_reading_lab"); // Tambahkan post-reading lab
 };
+
 
 // Panggil fungsi saat halaman dimuat
 document.addEventListener("DOMContentLoaded", () => {

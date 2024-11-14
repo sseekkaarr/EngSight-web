@@ -27,18 +27,66 @@
         function goToPrevious() {
             window.location.href = 'reading.html';
         }
+    </script>
 
-        function submitEssay() {
-            // Menggunakan SweetAlert2 untuk mengganti alert bawaan
-            Swal.fire({
-                title: 'Exercise done!',
-                icon: 'success',
-                confirmButtonText: 'See result'
-            }).then(() => {
-                // Arahkan ke profile.html setelah tombol diklik
-                window.location.href = 'profile.html#test-results';
-            });
+    <script>
+        async function submitEssay() {
+            const essayInput = document.querySelector("textarea").value;
+            const userId = localStorage.getItem("user_id"); // Ambil user_id dari localStorage
+
+            if (!essayInput) {
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Please write your essay before submitting!',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+                return;
+            }
+
+            try {
+                const response = await fetch("http://localhost:5001/api/evaluatePostReadingLab", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${localStorage.getItem("token")}`, // Jika menggunakan autentikasi JWT
+                    },
+                    body: JSON.stringify({
+                        user_id: userId,
+                        essay: essayInput,
+                    }),
+                });
+
+                if (response.ok) {
+                    // Jika berhasil, arahkan ke profil dengan notifikasi
+                    Swal.fire({
+                        title: 'Exercise done!',
+                        icon: 'success',
+                        confirmButtonText: 'See result'
+                    }).then(() => {
+                        window.location.href = 'profile.html#test-results';
+                    });
+                } else {
+                    const errorData = await response.json();
+                    console.error("Failed to submit Post Reading Lab:", errorData);
+                    Swal.fire({
+                        title: 'Submission failed!',
+                        text: errorData.error || 'An unknown error occurred.',
+                        icon: 'error',
+                        confirmButtonText: 'Try Again'
+                    });
+                }
+            } catch (error) {
+                console.error("Error submitting Post Reading Lab:", error);
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'An error occurred while submitting. Please try again.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            }
         }
     </script>
+
 </body>
 </html>

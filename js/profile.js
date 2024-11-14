@@ -1,6 +1,5 @@
 console.log("Profile.js loaded");
 
-
 const apiUrl = "http://localhost:5001/api";
 
 // Fungsi untuk memuat data profil dari backend
@@ -25,6 +24,16 @@ const loadProfile = async () => {
 
     const data = await response.json();
 
+    // Pastikan user_id tersedia dalam respons API
+    if (!data.user_id) {
+      console.error("user_id not found in API response");
+      alert("Failed to load user data. Please contact support.");
+      return;
+    }
+
+    // Simpan user_id ke localStorage
+    localStorage.setItem("user_id", data.user_id);
+
     // Update profil
     document.getElementById("profile-name").textContent = data.name;
     document.getElementById("profile-email").textContent = data.email;
@@ -36,6 +45,75 @@ const loadProfile = async () => {
     alert("Error loading profile data. Please try again.");
   }
 };
+
+
+
+// Fungsi untuk mengambil hasil tes dari backend
+const fetchTestResults = async () => {
+  const userId = localStorage.getItem("user_id"); // Ambil user ID secara dinamis
+  if (!userId) {
+    console.error("User ID not found in localStorage.");
+    return;
+  }
+
+  try {
+    const response = await fetch(`${apiUrl}/test-results/${userId}`);
+    if (!response.ok) {
+      throw new Error("Failed to fetch test results.");
+    }
+    const results = await response.json();
+    loadTestResults(results); // Panggil fungsi render
+  } catch (error) {
+    console.error("Error fetching test results:", error);
+    document.querySelector(".test-cards").innerHTML = `<p>Error loading test results. Please try again later.</p>`;
+  }
+};
+
+// Fungsi untuk merender hasil tes di halaman
+const loadTestResults = (results) => {
+  const testResultsContainer = document.querySelector(".test-cards");
+  testResultsContainer.innerHTML = ""; // Bersihkan kontainer sebelumnya
+
+  results.forEach((result) => {
+    const card = document.createElement("div");
+    card.classList.add("test-card");
+
+    // Tentukan warna lingkaran progres berdasarkan skor
+    let scoreColor = "";
+    if (result.score >= 90) {
+      scoreColor = "#4caf50"; // Hijau untuk skor tinggi
+    } else if (result.score >= 70) {
+      scoreColor = "#ff9800"; // Oranye untuk skor sedang
+    } else {
+      scoreColor = "#f44336"; // Merah untuk skor rendah
+    }
+
+    // Elemen lingkaran progres
+    const progressRing = document.createElement("div");
+    progressRing.classList.add("progress-ring");
+    progressRing.style.borderColor = scoreColor;
+
+    const scoreText = document.createElement("span");
+    scoreText.classList.add("score-text");
+    scoreText.textContent = `${result.score}%`;
+
+    progressRing.appendChild(scoreText);
+
+    // Tambahkan data hasil tes ke dalam card
+    card.innerHTML = `
+        <h3>${result.test_type.replace(/_/g, " ")}</h3>
+        <p><strong>Date:</strong> ${new Date(result.submission_date).toLocaleDateString()}</p>
+    `;
+    card.prepend(progressRing);
+    testResultsContainer.appendChild(card);
+  });
+};
+
+// Panggil fungsi saat halaman dimuat
+document.addEventListener("DOMContentLoaded", () => {
+  loadProfile(); // Memuat profil pengguna
+  fetchTestResults(); // Memuat hasil tes
+});
 
 // Fungsi untuk memuat progress video
 const loadVideoProgress = async () => {
@@ -157,67 +235,6 @@ document.addEventListener("DOMContentLoaded", renderProgressBars);
 
 // Panggil fungsi loadVideoProgress saat halaman dimuat
 document.addEventListener("DOMContentLoaded", loadVideoProgress);
-
-// Fungsi untuk mengambil hasil tes dari backend
-const fetchTestResults = async (userId) => {
-  try {
-      const response = await fetch(`/api/test-results/${userId}`);
-      if (!response.ok) {
-          throw new Error("Failed to fetch test results.");
-      }
-      const results = await response.json();
-      loadTestResults(results); // Panggil fungsi render
-  } catch (error) {
-      console.error("Error fetching test results:", error);
-      document.querySelector(".test-cards").innerHTML = `<p>Error loading test results. Please try again later.</p>`;
-  }
-};
-
-
-const loadTestResults = (results) => {
-  const testResultsContainer = document.querySelector(".test-cards");
-  testResultsContainer.innerHTML = ""; // Bersihkan kontainer sebelumnya
-
-  results.forEach((result) => {
-      const card = document.createElement("div");
-      card.classList.add("test-card");
-
-      // Tentukan warna lingkaran progres berdasarkan skor
-      let scoreColor = "";
-      if (result.score >= 90) {
-          scoreColor = "#4caf50"; // Hijau untuk skor tinggi
-      } else if (result.score >= 70) {
-          scoreColor = "#ff9800"; // Oranye untuk skor sedang
-      } else {
-          scoreColor = "#f44336"; // Merah untuk skor rendah
-      }
-
-      // Elemen lingkaran progres
-      const progressRing = document.createElement("div");
-      progressRing.classList.add("progress-ring");
-      progressRing.style.borderColor = scoreColor;
-
-      const scoreText = document.createElement("span");
-      scoreText.classList.add("score-text");
-      scoreText.textContent = `${result.score}%`;
-
-      progressRing.appendChild(scoreText);
-
-      // Tambahkan data hasil tes ke dalam card
-      card.innerHTML = `
-          <h3>${result.test_type.replace(/_/g, " ")}</h3>
-          <p><strong>Date:</strong> ${new Date(result.submission_date).toLocaleDateString()}</p>
-      `;
-      card.prepend(progressRing);
-      testResultsContainer.appendChild(card);
-  });
-};
-document.addEventListener("DOMContentLoaded", () => {
-  const userId = 5; // Ganti dengan ID user yang sesuai
-  fetchTestResults(userId);
-});
-
-
 
 
 // Data aktivitas (contoh data)

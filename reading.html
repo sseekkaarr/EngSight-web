@@ -148,14 +148,15 @@
                 Decreed: document.getElementById("dropzone5").getAttribute("data-answer") || "",
             };
 
+            const userId = localStorage.getItem("user_id");
             const payload = {
-                user_id: 5, // Replace with dynamic user ID
+                user_id: userId, // Ganti hardcoded 5 dengan nilai dari localStorage
                 text_box: textBoxAnswers,
                 drag_drop: dragDropAnswers,
             };
 
             try {
-                const response = await fetch("http://127.0.0.1:5001/api/test/evaluate-test", {
+                const response = await fetch("http://127.0.0.1:5001/api/evaluate-test", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",

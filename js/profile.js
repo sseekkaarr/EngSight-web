@@ -50,63 +50,55 @@ const loadProfile = async () => {
 
 // Fungsi untuk mengambil hasil tes dari backend
 const fetchTestResults = async () => {
-  const userId = localStorage.getItem("user_id"); // Ambil user ID secara dinamis
+  const userId = localStorage.getItem("user_id"); // Ambil user ID dari localStorage
   if (!userId) {
-    console.error("User ID not found in localStorage.");
-    return;
+      console.error("User ID not found in localStorage.");
+      document.querySelector(".test-cards").innerHTML = `<p>No test results found.</p>`;
+      return;
   }
 
   try {
-    const response = await fetch(`${apiUrl}/test-results/${userId}`);
-    if (!response.ok) {
-      throw new Error("Failed to fetch test results.");
-    }
-    const results = await response.json();
-    loadTestResults(results); // Panggil fungsi render
+      const response = await fetch(`${apiUrl}/test-results/${userId}`);
+      if (!response.ok) {
+          throw new Error("Failed to fetch test results.");
+      }
+
+      const result = await response.json();
+      // Render hanya hasil tes terakhir
+      renderSingleTestResult(result);
   } catch (error) {
-    console.error("Error fetching test results:", error);
-    document.querySelector(".test-cards").innerHTML = `<p>Error loading test results. Please try again later.</p>`;
+      console.error("Error fetching test results:", error);
+      document.querySelector(".test-cards").innerHTML = `<p>Error loading test results. Please try again later.</p>`;
   }
 };
 
-// Fungsi untuk merender hasil tes di halaman
-const loadTestResults = (results) => {
+const renderSingleTestResult = (result) => {
   const testResultsContainer = document.querySelector(".test-cards");
-  testResultsContainer.innerHTML = ""; // Bersihkan kontainer sebelumnya
+  testResultsContainer.innerHTML = ""; // Kosongkan kontainer sebelumnya
 
-  results.forEach((result) => {
-    const card = document.createElement("div");
-    card.classList.add("test-card");
+  const card = document.createElement("div");
+  card.classList.add("test-card");
 
-    // Tentukan warna lingkaran progres berdasarkan skor
-    let scoreColor = "";
-    if (result.score >= 90) {
+  // Tentukan warna lingkaran progres berdasarkan skor
+  let scoreColor = "";
+  if (result.score >= 90) {
       scoreColor = "#4caf50"; // Hijau untuk skor tinggi
-    } else if (result.score >= 70) {
+  } else if (result.score >= 70) {
       scoreColor = "#ff9800"; // Oranye untuk skor sedang
-    } else {
+  } else {
       scoreColor = "#f44336"; // Merah untuk skor rendah
-    }
+  }
 
-    // Elemen lingkaran progres
-    const progressRing = document.createElement("div");
-    progressRing.classList.add("progress-ring");
-    progressRing.style.borderColor = scoreColor;
+  // Render kartu hasil tes terakhir
+  card.innerHTML = `
+      <div class="progress-ring" style="border-color: ${scoreColor};">
+          <span class="score-text">${result.score}%</span>
+      </div>
+      <h3>${result.test_type.replace(/_/g, " ")}</h3>
+      <p><strong>Date:</strong> ${new Date(result.submission_date).toLocaleDateString()}</p>
+  `;
 
-    const scoreText = document.createElement("span");
-    scoreText.classList.add("score-text");
-    scoreText.textContent = `${result.score}%`;
-
-    progressRing.appendChild(scoreText);
-
-    // Tambahkan data hasil tes ke dalam card
-    card.innerHTML = `
-        <h3>${result.test_type.replace(/_/g, " ")}</h3>
-        <p><strong>Date:</strong> ${new Date(result.submission_date).toLocaleDateString()}</p>
-    `;
-    card.prepend(progressRing);
-    testResultsContainer.appendChild(card);
-  });
+  testResultsContainer.appendChild(card);
 };
 
 // Panggil fungsi saat halaman dimuat

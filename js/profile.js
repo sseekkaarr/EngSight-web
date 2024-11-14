@@ -127,114 +127,81 @@ document.addEventListener("DOMContentLoaded", () => {
 // Fungsi untuk memuat progress video
 const loadVideoProgress = async () => {
   const userId = localStorage.getItem("user_id");
+  const token = localStorage.getItem("token");
+
+  if (!userId || !token) {
+      console.error("User ID or Token not found. Redirecting to login.");
+      window.location.href = "login.html";
+      return;
+  }
 
   try {
-      const response = await fetch(`${apiUrl}/videos/progress?user_id=${userId}`, {
+      const response = await fetch(`http://localhost:5001/api/videos/progress/${userId}`, {
           method: "GET",
           headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
+              Authorization: `Bearer ${token}`,
               "Content-Type": "application/json",
           },
       });
 
-      let progressData;
-      if (response.ok) {
-          progressData = await response.json();
-      } else {
+      if (!response.ok) {
           console.warn("No progress data found. Using default values.");
-          progressData = [];
+          renderProgressBars([]); // Render progress kosong
+          return;
       }
 
-      // Default progress untuk 4 section
-      const defaultSections = [
-          { section_name: "Introduction", progress: 0 },
-          { section_name: "Paragraph", progress: 0 },
-          { section_name: "Essay", progress: 0 },
-          { section_name: "Citation", progress: 0 },
-      ];
+      const { progress } = await response.json();
+      console.log("Progress Data from Backend:", progress);
 
-      // Gabungkan data dari backend dengan default data
-      const finalData = defaultSections.map((defaultSection) => {
-          const backendSection = progressData.find(
-              (item) => item.section_name === defaultSection.section_name
-          );
-          return backendSection || defaultSection;
-      });
+      if (!Array.isArray(progress)) {
+          console.error("Invalid progress data format from backend:", progress);
+          renderProgressBars([]); // Render progress kosong jika format tidak sesuai
+          return;
+      }
 
-      renderProgressBars(finalData);
+      renderProgressBars(progress); // Render progress dengan data valid
   } catch (error) {
       console.error("Error loading video progress:", error.message);
-
-      // Jika ada error, gunakan default data
-      const defaultSections = [
-          { section_name: "Introduction", progress: 0 },
-          { section_name: "Paragraph", progress: 0 },
-          { section_name: "Essay", progress: 0 },
-          { section_name: "Citation", progress: 0 },
-      ];
-      renderProgressBars(defaultSections);
+      renderProgressBars([]); // Render progress kosong jika terjadi error
   }
 };
 
-// Fungsi untuk merender progress bar secara dinamis
-const renderProgressBars = async () => {
-  const userId = localStorage.getItem("user_id"); // Ambil user ID dari localStorage
+const renderProgressBars = (progressData) => {
   const progressContainer = document.querySelector(".progress-container");
+  progressContainer.innerHTML = ""; // Kosongkan kontainer sebelum render ulang
 
-  
+  const sections = ["Introduction", "Paragraph", "Essay", "Citation"];
 
-  try {
-      const response = await fetch(`http://localhost:5001/api/videos/progress?user_id=${userId}`, {
-          method: "GET",
-          headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-      });
+  sections.forEach((sectionName) => {
+      const sectionProgress = progressData.find(
+          (progress) => progress.sectionName === sectionName
+      );
 
-      if (!response.ok) {
-          throw new Error(`Failed to fetch progress: ${response.status}`);
-      }
+      const completedPercentage = sectionProgress ? sectionProgress.progress : 0;
 
-      const progressData = await response.json(); // Ambil data dari backend
-      const sections = ["Introduction", "Paragraph", "Essay", "Citation"]; // Semua section
+      const progressCategory = document.createElement("div");
+      progressCategory.classList.add("progress-category");
 
-      progressContainer.innerHTML = ""; // Kosongkan kontainer sebelum render ulang
+      progressCategory.innerHTML = `
+          <h3>${sectionName}</h3>
+          <div class="progress-bar-container">
+              <div class="progress-bar ${
+                  completedPercentage >= 90
+                      ? "green"
+                      : completedPercentage >= 70
+                      ? "orange"
+                      : "red"
+              }" style="width: ${completedPercentage}%;"></div>
+          </div>
+          <p>${Math.round(completedPercentage)}% Completed</p>
+      `;
 
-      sections.forEach((sectionName) => {
-          // Filter data untuk setiap section
-          const sectionVideos = progressData.filter(
-              (progress) => progress.section_name === sectionName
-          );
+      progressContainer.appendChild(progressCategory);
+  });
 
-          const totalVideos = sectionVideos.length;
-          const watchedVideos = sectionVideos.filter((video) => video.watched).length;
-          const completedPercentage = totalVideos > 0 ? (watchedVideos / totalVideos) * 100 : 0;
-
-          const progressCategory = document.createElement("div");
-          progressCategory.classList.add("progress-category");
-
-          progressCategory.innerHTML = `
-              <h3>${sectionName}</h3>
-              <div class="progress-bar-container">
-                  <div class="progress-bar ${
-                      completedPercentage >= 90
-                          ? "green"
-                          : completedPercentage >= 70
-                          ? "orange"
-                          : "red"
-                  }" style="width: ${completedPercentage}%;"></div>
-              </div>
-              <p>${Math.round(completedPercentage)}% Completed</p>
-          `;
-
-          progressContainer.appendChild(progressCategory);
-      });
-
-      console.log("Progress bars updated successfully!");
-  } catch (error) {
-      console.error("Error rendering progress bars:", error);
-  }
+  console.log("Progress bars updated successfully!");
 };
+
 
 // Jalankan fungsi ini saat halaman dimuat
 document.addEventListener("DOMContentLoaded", renderProgressBars);

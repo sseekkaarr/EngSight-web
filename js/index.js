@@ -35,36 +35,29 @@ function startNow() {
 }
 
 const trackVideoProgress = async (videoId, sectionName) => {
-    const userId = localStorage.getItem("user_id"); // Ambil user_id dari localStorage
-    const token = localStorage.getItem("token"); // Ambil token dari localStorage
-
-    // Debugging log untuk memastikan data yang dikirim
-    console.log("Sending video progress:", { userId, videoId, sectionName });
+    const userId = localStorage.getItem("user_id");
+    const token = localStorage.getItem("token");
 
     try {
         const response = await fetch("http://localhost:5001/api/videos/progress", {
             method: "POST",
             headers: {
+                Authorization: `Bearer ${token}`,
                 "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`, // Kirim token
             },
-            body: JSON.stringify({
-                user_id: userId,
-                video_id: videoId,
-                section_name: sectionName,
-                watched: true, // Tandai sebagai sudah ditonton
-            }),
+            body: JSON.stringify({ userId, videoId, sectionName }),
         });
 
-        if (response.ok) {
-            console.log("Progress saved successfully.");
+        if (!response.ok) {
+            console.error("Failed to update video progress");
         } else {
-            console.error("Failed to save progress. Response status:", response.status);
+            console.log(`Progress updated for video ${videoId} in ${sectionName}`);
         }
     } catch (error) {
-        console.error("Error saving progress:", error);
+        console.error("Error updating video progress:", error);
     }
 };
+
 
 
 // Tambahkan event listener untuk semua video

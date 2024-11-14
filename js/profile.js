@@ -58,47 +58,55 @@ const fetchTestResults = async () => {
   }
 
   try {
-      const response = await fetch(`${apiUrl}/test-results/${userId}`);
+      const response = await fetch(`http://localhost:5001/api/test-results/${userId}`);
       if (!response.ok) {
           throw new Error("Failed to fetch test results.");
       }
 
-      const result = await response.json();
-      // Render hanya hasil tes terakhir
-      renderSingleTestResult(result);
+      const result = await response.json(); // Mengambil hasil tes terakhir
+      renderTestResults(result);
   } catch (error) {
       console.error("Error fetching test results:", error);
       document.querySelector(".test-cards").innerHTML = `<p>Error loading test results. Please try again later.</p>`;
   }
 };
 
-const renderSingleTestResult = (result) => {
+const renderTestResults = (results) => {
   const testResultsContainer = document.querySelector(".test-cards");
   testResultsContainer.innerHTML = ""; // Kosongkan kontainer sebelumnya
 
-  const card = document.createElement("div");
-  card.classList.add("test-card");
+  const renderCard = (testResult, testType) => {
+      if (!testResult) return; // Jika hasil null, abaikan
 
-  // Tentukan warna lingkaran progres berdasarkan skor
-  let scoreColor = "";
-  if (result.score >= 90) {
-      scoreColor = "#4caf50"; // Hijau untuk skor tinggi
-  } else if (result.score >= 70) {
-      scoreColor = "#ff9800"; // Oranye untuk skor sedang
-  } else {
-      scoreColor = "#f44336"; // Merah untuk skor rendah
-  }
+      const card = document.createElement("div");
+      card.classList.add("test-card");
 
-  // Render kartu hasil tes terakhir
-  card.innerHTML = `
-      <div class="progress-ring" style="border-color: ${scoreColor};">
-          <span class="score-text">${result.score}%</span>
-      </div>
-      <h3>${result.test_type.replace(/_/g, " ")}</h3>
-      <p><strong>Date:</strong> ${new Date(result.submission_date).toLocaleDateString()}</p>
-  `;
+      // Tentukan warna lingkaran progres berdasarkan skor
+      let scoreColor = "";
+      if (testResult.score >= 90) {
+          scoreColor = "#4caf50"; // Hijau untuk skor tinggi
+      } else if (testResult.score >= 50) {
+          scoreColor = "#ff9800"; // Oranye untuk skor sedang
+      } else {
+          scoreColor = "#f44336"; // Merah untuk skor rendah
+      }
+      
 
-  testResultsContainer.appendChild(card);
+      // Render kartu hasil tes
+      card.innerHTML = `
+          <div class="progress-ring" style="border-color: ${scoreColor};">
+              <span class="score-text">${testResult.score}%</span>
+          </div>
+          <h3>${testType.replace("_", " ")}</h3>
+          <p><strong>Date:</strong> ${new Date(testResult.submission_date).toLocaleDateString()}</p>
+      `;
+
+      testResultsContainer.appendChild(card);
+  };
+
+  // Render hasil pre-reading lab dan reading lab
+  renderCard(results.preReadingLab, "pre_reading_lab");
+  renderCard(results.readingLab, "reading_lab");
 };
 
 // Panggil fungsi saat halaman dimuat
@@ -106,6 +114,7 @@ document.addEventListener("DOMContentLoaded", () => {
   loadProfile(); // Memuat profil pengguna
   fetchTestResults(); // Memuat hasil tes
 });
+
 
 // Fungsi untuk memuat progress video
 const loadVideoProgress = async () => {

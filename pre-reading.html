@@ -17,12 +17,38 @@
        <h2>Pre-Reading Lab</h2>
        <p><strong>Activate Your Critical Thinking</strong></p>
        <p>Before diving into the reading, take a moment to clear your mind and prepare to engage critically with the text. Reading is more than just understanding words—it's about uncovering deeper meanings, evaluating arguments, and questioning assumptions.</p>
-       <button onclick="goToNext()">Next</button>
+       <button id="next-button">Next</button>
    </div>
    <script>
-       function goToNext() {
-           window.location.href = 'reading.html';
-       }
+       document.getElementById("next-button").addEventListener("click", async () => {
+           const userId = localStorage.getItem("user_id");
+
+           if (!userId) {
+               alert("User ID not found. Please log in again.");
+               return;
+           }
+
+           try {
+               const response = await fetch("http://localhost:5001/api/complete-pre-reading-lab", {
+                   method: "POST",
+                   headers: {
+                       "Content-Type": "application/json",
+                       Authorization: `Bearer ${localStorage.getItem("token")}`,
+                   },
+                   body: JSON.stringify({ user_id: userId }),
+               });
+
+               if (!response.ok) {
+                   throw new Error("Failed to complete Pre-Reading Lab");
+               }
+
+               alert("Pre-Reading Lab completed! Moving to the next step.");
+               window.location.href = "reading.html"; // Redirect ke halaman berikutnya
+           } catch (error) {
+               console.error("Error completing Pre-Reading Lab:", error);
+               alert("An error occurred. Please try again.");
+           }
+       });
    </script>
 </body>
 </html>

@@ -21,9 +21,6 @@ dropzones.forEach(dropzone => {
     });
 });
 
-// Fungsi untuk menghandle form register
-console.log('Script.js loaded');
-
 // Fungsi untuk menangani form registrasi
 const registerForm = document.getElementById('register-form');
 if (registerForm) {
@@ -265,4 +262,3 @@ const trackVideoProgress = async (videoId, sectionName) => {
         console.error("Error saving progress:", error);
     }
 };
-

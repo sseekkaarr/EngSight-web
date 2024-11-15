@@ -17,40 +17,22 @@ function showDescription(lab) {
 }
 
 
-async function startNow() {
-    const token = localStorage.getItem('token');
+function startNow() {
+    const token = localStorage.getItem('token'); // Ambil token dari localStorage
+
     console.log('Token:', token);
 
-    if (!token) {
+    if (token) {
+        // Jika token ada, redirect ke pre-reading.html
+        console.log('User is logged in. Redirecting to pre-reading...');
+        window.location.href = 'pre-reading.html';
+    } else {
+        // Jika token tidak ada, redirect ke login.html
+        console.log('User is not logged in. Redirecting to login...');
         alert('You need to log in first!');
-        window.location.href = 'login.html';
-        return;
-    }
-
-    try {
-        const response = await fetch('https://your-api-endpoint/validate-token', {
-            method: 'GET',
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
-
-        if (response.ok) {
-            console.log('Token is valid. Redirecting to pre-reading...');
-            window.location.href = 'pre-reading.html';
-        } else {
-            alert('Session expired. Please log in again.');
-            localStorage.removeItem('token');
-            window.location.href = 'login.html';
-        }
-    } catch (error) {
-        console.error('Error validating token:', error);
-        alert('Unable to validate session. Please log in again.');
-        localStorage.removeItem('token');
         window.location.href = 'login.html';
     }
 }
-
 
 const trackVideoProgress = async (videoId, sectionName) => {
     const userId = localStorage.getItem("user_id");

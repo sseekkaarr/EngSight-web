@@ -1,5 +1,5 @@
 console.log("index.js loaded");
-const apiUrl = "http://localhost:5001/api";
+const apiUrl = "https://engsight-be-production.up.railway.app/api";
 
 
 function showDescription(lab) {
@@ -39,7 +39,7 @@ const trackVideoProgress = async (videoId, sectionName) => {
     const token = localStorage.getItem("token");
 
     try {
-        const response = await fetch("http://localhost:5001/api/videos/progress", {
+        const response = await fetch("https://engsight-be-production.up.railway.app/api/videos/progress", {
             method: "POST",
             headers: {
                 Authorization: `Bearer ${token}`,

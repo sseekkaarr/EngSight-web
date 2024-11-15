@@ -1,6 +1,6 @@
 console.log("Profile.js loaded");
 
-const apiUrl = "http://localhost:5001/api";
+const apiUrl = "https://engsight-be-production.up.railway.app/api";
 
 // Fungsi untuk memuat data profil dari backend
 const loadProfile = async () => {
@@ -58,7 +58,7 @@ const fetchTestResults = async () => {
   }
 
   try {
-      const response = await fetch(`http://localhost:5001/api/test-results/${userId}`);
+      const response = await fetch(`https://engsight-be-production.up.railway.app/api/test-results/${userId}`);
       if (!response.ok) {
           throw new Error("Failed to fetch test results.");
       }
@@ -136,7 +136,7 @@ const loadVideoProgress = async () => {
   }
 
   try {
-      const response = await fetch(`http://localhost:5001/api/videos/progress/${userId}`, {
+      const response = await fetch(`https://engsight-be-production.up.railway.app/api/videos/progress/${userId}`, {
           method: "GET",
           headers: {
               Authorization: `Bearer ${token}`,

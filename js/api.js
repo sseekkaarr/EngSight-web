@@ -7,7 +7,7 @@ export const apiRequest = async (endpoint, method = "GET", body = null) => {
     }
 
     try {
-        const response = await fetch(`http://localhost:5001/api${endpoint}`, {
+        const response = await fetch(`https://engsight-be-production.up.railway.app/api${endpoint}`, {
             method,
             headers,
             body: body ? JSON.stringify(body) : null,
@@ -26,7 +26,7 @@ export const apiRequest = async (endpoint, method = "GET", body = null) => {
 
 export const fetchTestResults = async (userId) => {
     try {
-        const response = await fetch(`/api/test-results/${userId}`);
+        const response = await fetch(`https://engsight-be-production.up.railway.app/api/test-results/${userId}`);
         if (!response.ok) {
             throw new Error("Failed to fetch test results");
         }
@@ -36,4 +36,3 @@ export const fetchTestResults = async (userId) => {
         throw error;
     }
 };
-

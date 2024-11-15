@@ -1,2 +1,2 @@
-const apiUrl = "http://localhost:3000/api";
+const apiUrl = "https://engsight-be-production.up.railway.app/api";
 export default apiUrl;

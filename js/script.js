@@ -76,7 +76,7 @@ if (loginForm) {
     loginForm.addEventListener('submit', async function (e) {
         e.preventDefault();
 
-        const email = document.getElementById('login-email').value;
+        const email = document.getElementById('login-email').value.trim();
         const password = document.getElementById('login-password').value;
 
         console.log(`Login attempt with Email: ${email}, Password: ${password}`);
@@ -104,6 +104,7 @@ if (loginForm) {
         }
     });
 }
+
 
 
 // Cek apakah user sudah login

@@ -89,6 +89,9 @@ if (loginForm) {
 
             const data = await response.json();
             if (response.ok) {
+                // Simpan token dan data user di localStorage
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('user', JSON.stringify(data.user));
                 alert('Login successful!');
                 window.location.href = 'index.html';
             } else {
@@ -133,6 +136,7 @@ if (logoutButton) {
         if (confirmLogout) {
             // Hapus token dari localStorage
             localStorage.removeItem('token');
+            localStorage.removeItem('user');
             alert('Logged out successfully!');
             window.location.href = 'login.html'; // Redirect ke login page
         }

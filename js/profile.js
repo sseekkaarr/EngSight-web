@@ -1,5 +1,7 @@
 console.log("Profile.js loaded");
 
+import { fetchWithAuth } from "./api";
+
 const apiUrl = "https://engsight-be-production.up.railway.app/api";
 
 // Fungsi untuk memuat data profil dari backend
@@ -294,6 +296,20 @@ function changeMonth(direction) {
 
     generateCalendar();
 }
+
+import { fetchWithAuth } from "./api";
+
+document.addEventListener("DOMContentLoaded", async () => {
+  try {
+    const profileData = await fetchWithAuth("/api/user/profile");
+    document.getElementById("user-name").textContent = profileData.name;
+    document.getElementById("user-email").textContent = profileData.email;
+  } catch (error) {
+    console.error("Error fetching profile data:", error.message);
+    alert("Failed to fetch profile data. Please log in again.");
+    window.location.href = "/login"; // Redirect to login page
+  }
+});
 
 // Tambahkan event listener ke tombol navigasi
 document.getElementById('prev-month').addEventListener('click', () => changeMonth(-1));

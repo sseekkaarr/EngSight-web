@@ -91,6 +91,7 @@ if (loginForm) {
             if (response.ok) {
                 // Simpan token dan data user di localStorage
                 localStorage.setItem('token', data.token);
+                localStorage.setItem('user_id', data.user.id);
                 localStorage.setItem('user', JSON.stringify(data.user));
                 alert('Login successful!');
                 window.location.href = 'index.html';

@@ -21,9 +21,8 @@
    </div>
    <script>
        document.getElementById("next-button").addEventListener("click", async () => {
-           // const userId = localStorage.getItem("user_id");
-           localStorage.setItem('token', data.token);
-           localStorage.setItem('user', JSON.stringify(data.user));
+           const userId = localStorage.getItem("user_id");
+           const token = localStorage.getItem("token");
 
            if (!userId) {
                alert("User ID not found. Please log in again.");

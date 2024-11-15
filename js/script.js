@@ -22,6 +22,9 @@ dropzones.forEach(dropzone => {
 });
 
 // Fungsi untuk menghandle form register
+console.log('Script.js loaded');
+
+// Fungsi untuk menangani form registrasi
 const registerForm = document.getElementById('register-form');
 if (registerForm) {
     registerForm.addEventListener('submit', async function (e) {
@@ -30,6 +33,17 @@ if (registerForm) {
         const name = document.getElementById('register-name').value;
         const email = document.getElementById('register-email').value;
         const password = document.getElementById('register-password').value;
+
+        // Validasi input
+        if (!name || !email || !password) {
+            alert('All fields are required.');
+            return;
+        }
+
+        if (!/^\S+@\S+\.\S+$/.test(email)) {
+            alert('Invalid email format.');
+            return;
+        }
 
         try {
             const response = await fetch('https://engsight-be-production.up.railway.app/api/auth/register', {
@@ -43,15 +57,18 @@ if (registerForm) {
             const data = await response.json();
             if (response.ok) {
                 alert('Registration successful!');
-                window.location.href = 'login.html'; // Redirect to login page
+                window.location.href = 'login.html'; // Redirect ke halaman login
             } else {
-                alert(`Error: ${data.message}`);
+                console.error('Error response:', data);
+                alert(`Error: ${data.message || 'An unknown error occurred.'}`);
             }
         } catch (error) {
             console.error('Error registering user:', error);
+            alert('Failed to connect to the server.');
         }
     });
 }
+
 
 // Fungsi untuk menghandle form login
 const loginForm = document.getElementById('login-form');
@@ -61,6 +78,8 @@ if (loginForm) {
 
         const email = document.getElementById('login-email').value;
         const password = document.getElementById('login-password').value;
+
+        console.log(`Login attempt with Email: ${email}, Password: ${password}`);
 
         try {
             const response = await fetch('https://engsight-be-production.up.railway.app/api/auth/login', {
@@ -73,18 +92,19 @@ if (loginForm) {
 
             const data = await response.json();
             if (response.ok) {
-                localStorage.setItem('token', data.token); // Simpan token
                 alert('Login successful!');
-                window.location.href = 'index.html'; // Redirect ke halaman berikutnya
+                window.location.href = 'index.html';
             } else {
+                console.error('Error response:', data);
                 alert(`Error: ${data.message}`);
             }
         } catch (error) {
             console.error('Error logging in:', error);
-            alert('Failed to connect to server.');
+            alert('Failed to connect to the server.');
         }
     });
 }
+
 
 // Cek apakah user sudah login
 const token = localStorage.getItem('token');
